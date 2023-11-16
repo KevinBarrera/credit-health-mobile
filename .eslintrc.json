@@ -1,0 +1,30 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "standard-with-typescript",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:prettier/recommended",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["react-native", "react", "@typescript-eslint", "prettier"],
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "prettier/prettier": "error",
+    "prefer-arrow-callback": [
+      "error",
+      { "allowNamedFunctions": false, "allowUnboundThis": false }
+    ],
+    "arrow-body-style": ["error", "as-needed"]
+  }
+}
