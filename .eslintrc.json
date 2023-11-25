@@ -25,6 +25,9 @@
       "error",
       { "allowNamedFunctions": false, "allowUnboundThis": false }
     ],
-    "arrow-body-style": ["error", "as-needed"]
+    "arrow-body-style": ["error", "as-needed"],
+    "@typescript-eslint/consistent-type-assertions": "off",
+    "@typescript-eslint/consistent-type-imports": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off"
   }
 }
