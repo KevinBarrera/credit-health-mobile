@@ -1,29 +1,32 @@
-import { useState } from "react";
-import {
-  Platform,
-  StatusBar,
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { theme } from "../common/theme";
-import CustomButton from "../components/CustomButton";
-import CustomInput from "../components/CustomInput";
-import ScrollKeyboardAvoidingView from "../components/ScrollKeyboardAvoidingView";
-import ArrowLeft from "../../assets/svg/icons/ArrowLeft";
-import { AuthStackParamList } from "../routes/params";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { View, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import ArrowLeft from "../../../../assets/svg/icons/ArrowLeft";
+import { theme } from "../../../common/theme";
+import CustomButton from "../../../components/CustomButton";
+import FormInput from "../../../components/FormInput";
+import ScrollKeyboardAvoidingView from "../../../components/ScrollKeyboardAvoidingView";
+import { AuthStackParamList } from "../../../routes/params";
+import {
+  ForgotPasswordSchema,
+  ForgotPasswordType
+} from "../../../schemas/auth.schemas";
+import { styles } from "./elements";
 
 const ForgotPasswordScreen = () => {
-  const [email, setEmail] = useState("");
+  const { control, handleSubmit } = useForm<ForgotPasswordType>({
+    resolver: zodResolver(ForgotPasswordSchema)
+  });
 
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
-  const handleSendCode = () => {
+  const handleSendCode: SubmitHandler<ForgotPasswordType> = (data) => {
+    console.log(data);
     // TODO: we need to send an otp code to the email
     // if code successfully sent we need to move to ResetPasswordScreen
     navigation.navigate("ResetPasswordScreen");
@@ -45,11 +48,12 @@ const ForgotPasswordScreen = () => {
         </TouchableOpacity>
         <Text style={styles.title}>Restablecer contraseña</Text>
         <View style={styles.formContainer}>
-          <CustomInput
+          <FormInput<ForgotPasswordType>
+            control={control}
+            name="email"
             placeholder="Correo"
             textContentType="emailAddress"
-            onChangeText={setEmail}
-            value={email}
+            autoCapitalize="none"
           />
           <Text style={styles.infoText}>
             Enviaremos a tu correo electrónico un código para que puedas
@@ -58,7 +62,7 @@ const ForgotPasswordScreen = () => {
           <CustomButton
             type="Primary"
             text="Enviar código"
-            onPress={handleSendCode}
+            onPress={handleSubmit(handleSendCode)}
           />
           <CustomButton
             type="Tertiary"
@@ -72,31 +76,3 @@ const ForgotPasswordScreen = () => {
 };
 
 export { ForgotPasswordScreen };
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    alignItems: "center",
-    backgroundColor: theme.colors.glacier[50],
-    paddingHorizontal: 16,
-    paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
-    paddingBottom: 16
-  },
-  safeContainer: {
-    flex: 1,
-    width: "100%",
-    padding: 0
-  },
-  title: {
-    ...theme.fonts.h1,
-    textAlign: "center",
-    color: theme.colors.glacier[950],
-    marginVertical: 24
-  },
-  infoText: { ...theme.fonts.t6, color: theme.colors.glacier[700] },
-  formContainer: {
-    width: "100%",
-    justifyContent: "center",
-    gap: 16
-  }
-});

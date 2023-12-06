@@ -25,9 +25,14 @@
       "error",
       { "allowNamedFunctions": false, "allowUnboundThis": false }
     ],
+    "import/order": [
+      "error",
+      { "alphabetize": { "order": "asc", "caseInsensitive": true } }
+    ],
     "arrow-body-style": ["error", "as-needed"],
     "@typescript-eslint/consistent-type-assertions": "off",
     "@typescript-eslint/consistent-type-imports": "off",
-    "@typescript-eslint/strict-boolean-expressions": "off"
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-misused-promises": "off"
   }
 }

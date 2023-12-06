@@ -1,10 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { SignInScreen } from "../screens/SignInScreen";
-import { SignUpEmailScreen } from "../screens/SignUpEmailScreen";
-import { SignUpInfoScreen } from "../screens/SignUpInfoScreen";
-import { SignUpConfirmScreen } from "../screens/SignUpConfirmScreen";
-import { ForgotPasswordScreen } from "../screens/ForgotPasswordScreen";
-import { ResetPasswordScreen } from "../screens/ResetPasswordScreen";
+
+import { ForgotPasswordScreen } from "../screens/Auth/ForgotPasswordScreen";
+import { ResetPasswordScreen } from "../screens/Auth/ResetPasswordScreen";
+import { SignInScreen } from "../screens/Auth/SignInScreen";
+import { SignUpConfirmScreen } from "../screens/Auth/SignUpConfirmScreen";
+import { SignUpEmailScreen } from "../screens/Auth/SignUpEmailScreen";
+import { SignUpInfoScreen } from "../screens/Auth/SignUpInfoScreen";
 import { AuthStackParamList } from "./params";
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();

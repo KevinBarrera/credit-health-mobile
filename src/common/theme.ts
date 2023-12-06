@@ -70,6 +70,10 @@ const theme = {
     t6: {
       fontSize: 14,
       fontWeight: "normal"
+    } as TextStyle,
+    helperText: {
+      fontSize: 10,
+      fontWeight: "normal"
     } as TextStyle
   }
 };

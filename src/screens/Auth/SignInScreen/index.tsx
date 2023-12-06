@@ -1,24 +1,30 @@
-import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { theme } from "../common/theme";
-import { IonCard } from "../../assets/svg/icons/IonCard";
-import CustomButton from "../components/CustomButton";
-import CustomInput from "../components/CustomInput";
-import ScrollKeyboardAvoidingView from "../components/ScrollKeyboardAvoidingView";
-import { AuthStackParamList } from "../routes/params";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Text, View } from "react-native";
+
+import { IonCard } from "../../../../assets/svg/icons/IonCard";
+import { theme } from "../../../common/theme";
+import CustomButton from "../../../components/CustomButton";
+import FormInput from "../../../components/FormInput";
+import ScrollKeyboardAvoidingView from "../../../components/ScrollKeyboardAvoidingView";
+import { AuthStackParamList } from "../../../routes/params";
+import { SignInSchema, SignInType } from "../../../schemas/auth.schemas";
+import { styles } from "./element";
 
 const SignInScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { control, handleSubmit } = useForm<SignInType>({
+    resolver: zodResolver(SignInSchema)
+  });
 
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
-  const handleSignIn = () => {
+  const handleSignIn: SubmitHandler<SignInType> = (data) => {
     // TODO: call backend to do sign in process
     // If all good we should redirect user to HomeScreen
+    console.log(data);
   };
 
   const handleSignUp = () => {
@@ -43,18 +49,25 @@ const SignInScreen = () => {
         </View>
       </View>
       <View style={styles.formContainer}>
-        <CustomInput
+        <FormInput<SignInType>
+          control={control}
+          name="email"
           placeholder="Correo"
           textContentType="emailAddress"
-          onChangeText={setEmail}
-          value={email}
+          autoCapitalize="none"
         />
-        <CustomInput
+        <FormInput<SignInType>
+          control={control}
+          name="password"
           placeholder="Contraseña"
-          onChangeText={setPassword}
-          value={password}
+          textContentType="password"
+          secureTextEntry
         />
-        <CustomButton type="Primary" text="Entrar" onPress={handleSignIn} />
+        <CustomButton
+          type="Primary"
+          text="Entrar"
+          onPress={handleSubmit(handleSignIn)}
+        />
         <CustomButton
           type="Secondary"
           text="¿Aún no tienes cuenta? Regístrate"
@@ -71,37 +84,3 @@ const SignInScreen = () => {
 };
 
 export { SignInScreen };
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    alignItems: "center",
-    backgroundColor: theme.colors.glacier[50],
-    paddingHorizontal: 16,
-    paddingTop: 80,
-    paddingBottom: 16
-  },
-  headerContainer: {
-    justifyContent: "center",
-    marginBottom: 48
-  },
-  formContainer: {
-    width: "100%",
-    justifyContent: "center",
-    gap: 16
-  },
-  title: {
-    fontSize: 64,
-    fontWeight: "bold",
-    color: theme.colors.glacier[900]
-  },
-  title2: {
-    fontSize: 58,
-    fontWeight: "bold",
-    color: theme.colors.black
-  },
-  mainAndIconContainer: {
-    flexDirection: "row",
-    alignItems: "center"
-  }
-});

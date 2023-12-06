@@ -1,31 +1,32 @@
-import {
-  Platform,
-  StatusBar,
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity
-} from "react-native";
-import { theme } from "../common/theme";
-import CustomButton from "../components/CustomButton";
-import CustomInput from "../components/CustomInput";
-import ScrollKeyboardAvoidingView from "../components/ScrollKeyboardAvoidingView";
-import { useState } from "react";
-import ArrowLeft from "../../assets/svg/icons/ArrowLeft";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { AuthStackParamList } from "../routes/params";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { View, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import ArrowLeft from "../../../../assets/svg/icons/ArrowLeft";
+import { theme } from "../../../common/theme";
+import CustomButton from "../../../components/CustomButton";
+import FormInput from "../../../components/FormInput";
+import ScrollKeyboardAvoidingView from "../../../components/ScrollKeyboardAvoidingView";
+import { AuthStackParamList } from "../../../routes/params";
+import {
+  ResetPasswordSchema,
+  ResetPasswordType
+} from "../../../schemas/auth.schemas";
+import { styles } from "./elements";
 
 const ResetPasswordScreen = () => {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [otp, setOtp] = useState("");
+  const { control, handleSubmit } = useForm<ResetPasswordType>({
+    resolver: zodResolver(ResetPasswordSchema)
+  });
 
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
-  const handleResetPassword = () => {
+  const handleResetPassword: SubmitHandler<ResetPasswordType> = (data) => {
+    console.log(data);
     // TODO: we need to send the email, otp code and new password
     // if all good we tell user the password was reset and send him to SignInScreen
     navigation.navigate("SignInScreen");
@@ -51,32 +52,34 @@ const ResetPasswordScreen = () => {
         </TouchableOpacity>
         <Text style={styles.title}>Restablecer contraseña</Text>
         <View style={styles.formContainer}>
-          <CustomInput
+          <FormInput<ResetPasswordType>
+            control={control}
+            name="newPassword"
             placeholder="Nueva contraseña"
             textContentType="password"
-            onChangeText={setNewPassword}
-            value={newPassword}
+            secureTextEntry
           />
-          <CustomInput
+          <FormInput<ResetPasswordType>
+            control={control}
+            name="confirmNewPassword"
             placeholder="Confirmar nueva contraseña"
             textContentType="password"
-            onChangeText={setConfirmNewPassword}
-            value={confirmNewPassword}
+            secureTextEntry
           />
           <Text style={styles.infoText}>
             Enviamos a tu correo un código de 6 dígitos de verificación.
           </Text>
-          <CustomInput
-            placeholder="00-00-00"
+          <FormInput
+            control={control}
+            name="otp"
+            placeholder="000000"
             textContentType="oneTimeCode"
-            onChangeText={setOtp}
             keyboardType="numeric"
-            value={otp}
           />
           <CustomButton
             type="Primary"
             text="Restablecer contraseña"
-            onPress={handleResetPassword}
+            onPress={handleSubmit(handleResetPassword)}
           />
           <CustomButton
             type="Tertiary"
@@ -90,31 +93,3 @@ const ResetPasswordScreen = () => {
 };
 
 export { ResetPasswordScreen };
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    alignItems: "center",
-    backgroundColor: theme.colors.glacier[50],
-    paddingHorizontal: 16,
-    paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
-    paddingBottom: 16
-  },
-  safeContainer: {
-    flex: 1,
-    width: "100%",
-    padding: 0
-  },
-  title: {
-    ...theme.fonts.h1,
-    textAlign: "center",
-    color: theme.colors.glacier[950],
-    marginVertical: 24
-  },
-  infoText: { ...theme.fonts.t6, color: theme.colors.glacier[700] },
-  formContainer: {
-    width: "100%",
-    justifyContent: "center",
-    gap: 16
-  }
-});

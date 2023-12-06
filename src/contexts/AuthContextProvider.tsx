@@ -1,4 +1,5 @@
 import { ReactNode, createContext, useContext, useState } from "react";
+
 import { AuthContextData, AuthData } from "../common/interfaces";
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
