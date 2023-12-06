@@ -73,6 +73,7 @@ const ResetPasswordScreen = () => {
             control={control}
             name="otp"
             placeholder="000000"
+            maxLength={6}
             textContentType="oneTimeCode"
             keyboardType="numeric"
           />
