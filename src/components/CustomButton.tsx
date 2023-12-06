@@ -5,6 +5,7 @@ import {
   ViewStyle,
   TouchableOpacity
 } from "react-native";
+
 import { theme } from "../common/theme";
 
 interface CustomButtonProps {
