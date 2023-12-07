@@ -10,6 +10,7 @@ import { theme } from "../../../common/theme";
 import CustomButton from "../../../components/CustomButton";
 import FormInput from "../../../components/FormInput";
 import ScrollKeyboardAvoidingView from "../../../components/ScrollKeyboardAvoidingView";
+import { useAuthFlowsContext } from "../../../contexts/AuthFlowsContextProvider";
 import { AuthStackParamList } from "../../../routes/params";
 import {
   SignUpEmailSchema,
@@ -22,13 +23,13 @@ const SignUpEmailScreen = () => {
     resolver: zodResolver(SignUpEmailSchema)
   });
 
+  const { saveEmailAndPassword } = useAuthFlowsContext();
+
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
   const handleContinue: SubmitHandler<SignUpEmailType> = (data) => {
-    // TODO: we validate email and pass
-    // Check if we save info on device store or provider
-    console.log(data);
+    saveEmailAndPassword(data);
     navigation.navigate("SignUpInfoScreen");
   };
 
@@ -43,7 +44,7 @@ const SignUpEmailScreen = () => {
       bounces={false}
     >
       <SafeAreaView style={styles.safeContainer}>
-        <TouchableOpacity onPress={handleAlreadyHasAccount}>
+        <TouchableOpacity onPress={navigation.goBack}>
           <ArrowLeft color={theme.colors.glacier[900]} width={32} height={32} />
         </TouchableOpacity>
         <Text style={styles.title}>Crear cuenta</Text>
