@@ -10,6 +10,7 @@ import { theme } from "../../../common/theme";
 import CustomButton from "../../../components/CustomButton";
 import FormInput from "../../../components/FormInput";
 import ScrollKeyboardAvoidingView from "../../../components/ScrollKeyboardAvoidingView";
+import { useAuthFlowsContext } from "../../../contexts/AuthFlowsContextProvider";
 import { AuthStackParamList } from "../../../routes/params";
 import {
   ForgotPasswordSchema,
@@ -22,18 +23,16 @@ const ForgotPasswordScreen = () => {
     resolver: zodResolver(ForgotPasswordSchema)
   });
 
+  const { saveEmail } = useAuthFlowsContext();
+
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
   const handleSendCode: SubmitHandler<ForgotPasswordType> = (data) => {
-    console.log(data);
+    saveEmail(data);
     // TODO: we need to send an otp code to the email
     // if code successfully sent we need to move to ResetPasswordScreen
     navigation.navigate("ResetPasswordScreen");
-  };
-
-  const handleGoBack = () => {
-    navigation.navigate("SignInScreen");
   };
 
   return (
@@ -43,7 +42,7 @@ const ForgotPasswordScreen = () => {
       bounces={false}
     >
       <SafeAreaView style={styles.safeContainer}>
-        <TouchableOpacity onPress={handleGoBack}>
+        <TouchableOpacity onPress={navigation.goBack}>
           <ArrowLeft color={theme.colors.glacier[900]} width={32} height={32} />
         </TouchableOpacity>
         <Text style={styles.title}>Restablecer contraseña</Text>
@@ -67,7 +66,7 @@ const ForgotPasswordScreen = () => {
           <CustomButton
             type="Tertiary"
             text="Regresar a la pantalla principal"
-            onPress={handleGoBack}
+            onPress={navigation.goBack}
           />
         </View>
       </SafeAreaView>

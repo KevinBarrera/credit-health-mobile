@@ -1,15 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import ArrowLeft from "../../../../assets/svg/icons/ArrowLeft";
+import { ResetPasswordData } from "../../../common/interfaces";
 import { theme } from "../../../common/theme";
 import CustomButton from "../../../components/CustomButton";
 import FormInput from "../../../components/FormInput";
 import ScrollKeyboardAvoidingView from "../../../components/ScrollKeyboardAvoidingView";
+import { useAuthFlowsContext } from "../../../contexts/AuthFlowsContextProvider";
 import { AuthStackParamList } from "../../../routes/params";
 import {
   ResetPasswordSchema,
@@ -22,11 +25,13 @@ const ResetPasswordScreen = () => {
     resolver: zodResolver(ResetPasswordSchema)
   });
 
+  const { saveOtpAndNewPassword, resetPasswordData } = useAuthFlowsContext();
+
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
-  const handleResetPassword: SubmitHandler<ResetPasswordType> = (data) => {
-    console.log(data);
+  const handleResetPassword = (data: ResetPasswordData) => {
+    console.log("Lets verify OTP with new password", data);
     // TODO: we need to send the email, otp code and new password
     // if all good we tell user the password was reset and send him to SignInScreen
     navigation.navigate("SignInScreen");
@@ -36,9 +41,12 @@ const ResetPasswordScreen = () => {
     navigation.navigate("SignInScreen");
   };
 
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
+  useEffect(() => {
+    const { email, otp, newPassword } = resetPasswordData;
+    if (email && otp && newPassword) {
+      handleResetPassword(resetPasswordData);
+    }
+  }, [resetPasswordData]);
 
   return (
     <ScrollKeyboardAvoidingView
@@ -47,7 +55,7 @@ const ResetPasswordScreen = () => {
       bounces={false}
     >
       <SafeAreaView style={styles.safeContainer}>
-        <TouchableOpacity onPress={handleGoBack}>
+        <TouchableOpacity onPress={navigation.goBack}>
           <ArrowLeft color={theme.colors.glacier[900]} width={32} height={32} />
         </TouchableOpacity>
         <Text style={styles.title}>Restablecer contraseña</Text>
@@ -80,7 +88,7 @@ const ResetPasswordScreen = () => {
           <CustomButton
             type="Primary"
             text="Restablecer contraseña"
-            onPress={handleSubmit(handleResetPassword)}
+            onPress={handleSubmit(saveOtpAndNewPassword)}
           />
           <CustomButton
             type="Tertiary"
